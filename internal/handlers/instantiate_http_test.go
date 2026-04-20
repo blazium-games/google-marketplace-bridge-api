@@ -145,4 +145,7 @@ func TestInstantiate_Created(t *testing.T) {
 	if row.ContractUID != "uid-99" || row.WebhookAuthorization != "Bearer tok" {
 		t.Fatalf("row mismatch: %+v", row)
 	}
+	if row.ConsumerURL == "" || row.AdminURL == "" || row.ConsumerURL == row.AdminURL {
+		t.Fatalf("expected distinct consumer/admin urls: %+v", row)
+	}
 }

@@ -17,6 +17,9 @@ type Instantiate struct {
 	Project              string `gorm:"not null"`
 	WebhookURL           string `gorm:"not null"`
 	WebhookAuthorization string `gorm:"not null"` // value sent as Authorization when calling webhook_url
+	// ConsumerURL / AdminURL are random placeholders included in the outbound webhook JSON.
+	ConsumerURL string `gorm:"not null"`
+	AdminURL    string `gorm:"not null"`
 	WebhookNotifyAt      time.Time `gorm:"index;not null"`
 	WebhookDeliveredAt   *time.Time
 }

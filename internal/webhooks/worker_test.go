@@ -49,6 +49,8 @@ func TestProcessDue_DeliversAndMarksDelivered(t *testing.T) {
 		Project:              "p",
 		WebhookURL:           srv.URL,
 		WebhookAuthorization: "Bearer unit",
+		ConsumerURL:          "https://consumer.pogr-bridge.invalid/a",
+		AdminURL:             "https://admin.pogr-bridge.invalid/b",
 		WebhookNotifyAt:      time.Now().Add(-time.Minute),
 	}
 	if err := db.Create(&row).Error; err != nil {
@@ -66,6 +68,9 @@ func TestProcessDue_DeliversAndMarksDelivered(t *testing.T) {
 	}
 	if gotPayload.ContractUID != "c-webhook" {
 		t.Fatalf("payload %+v", gotPayload)
+	}
+	if gotPayload.ConsumerURL != row.ConsumerURL || gotPayload.AdminURL != row.AdminURL {
+		t.Fatalf("urls %+v", gotPayload)
 	}
 
 	var updated models.Instantiate
@@ -92,6 +97,8 @@ func TestDeliverOne_Non2xxDoesNotMarkDelivered(t *testing.T) {
 		Project:              "p",
 		WebhookURL:           srv.URL,
 		WebhookAuthorization: "tok",
+		ConsumerURL:          "https://consumer.pogr-bridge.invalid/x",
+		AdminURL:             "https://admin.pogr-bridge.invalid/y",
 		WebhookNotifyAt:      time.Now().Add(-time.Second),
 	}
 	if err := db.Create(&row).Error; err != nil {

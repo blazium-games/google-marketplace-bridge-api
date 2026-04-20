@@ -1,6 +1,8 @@
 # Google Marketplace Bridge API
 
-Go HTTP service for marketplace instantiation: `POST /instantiate`, `GET`/`HEAD` `/` and `/health` for probes, PostgreSQL persistence, and delayed webhook callbacks.
+Go HTTP service for marketplace instantiation: `POST /instantiate`, `POST /dummy` (same body; 5-minute webhook delay), `GET`/`HEAD` `/` and `/health` for probes, PostgreSQL persistence, and delayed webhook callbacks.
+
+See **`doc.md`** for request/response details.
 
 ## Quick start
 

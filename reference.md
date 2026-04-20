@@ -8,13 +8,15 @@ Error responses are JSON with a single numeric field `code`:
 
 HTTP status codes still reflect the class of error (4xx client, 5xx server). The `code` value identifies the specific condition.
 
+Endpoint reference (requests and success bodies) is in **`doc.md`**.
+
 ---
 
 ## HTTP routing
 
 | Code | HTTP | Meaning |
 |------|------|---------|
-| 10001 | 405 | The request used an HTTP method other than the one allowed for this path (e.g. not `POST` on `/instantiate`). |
+| 10001 | 405 | The request used an HTTP method other than allowed for that path. For example: not `POST` on `/instantiate` or `/dummy`; not `GET`/`HEAD` on `/` or `/health`. |
 
 ---
 
@@ -22,7 +24,7 @@ HTTP status codes still reflect the class of error (4xx client, 5xx server). The
 
 | Code | HTTP | Meaning |
 |------|------|---------|
-| 10002 | 401 | The required security header was missing or its value did not match the configured secret (`SECURITY_HEADER_NAME` / `SECURITY_HEADER_VALUE`). |
+| 10002 | 401 | The required security header was missing or its value did not match the configured secret (`SECURITY_HEADER_NAME` / `SECURITY_HEADER_VALUE`). Applies to **`POST /instantiate`** and **`POST /dummy`** (health routes do not use this header). |
 
 ---
 
@@ -35,9 +37,9 @@ HTTP status codes still reflect the class of error (4xx client, 5xx server). The
 
 ---
 
-## Instantiate field validation
+## Instantiate / dummy field validation
 
-These codes are returned for `POST /instantiate` when a required string field is missing or only whitespace.
+These codes are returned for **`POST /instantiate`** and **`POST /dummy`** when a required string field is missing or only whitespace. Validation order is fixed (first failure wins).
 
 | Code | HTTP | Meaning |
 |------|------|---------|
@@ -58,6 +60,14 @@ These codes are returned for `POST /instantiate` when a required string field is
 
 ---
 
-## Success responses
+## Success responses (no error `code`)
 
-Successful calls do not use these codes. For example, `POST /instantiate` returns `201 Created` with `{"success":true}`, not an error `code`.
+Successful calls do **not** return an error `code`. Examples:
+
+| Situation | HTTP | Body (summary) |
+|-----------|------|------------------|
+| `GET`/`HEAD` `/` or `/health` | **200** | Empty body. |
+| `POST /instantiate` | **201** | `{"success": true}` |
+| `POST /dummy` | **201** | `{"success": true, "time": "<RFC3339>"}` — `time` is when the outbound webhook is scheduled (5 minutes after create). |
+
+The outbound **`POST` to your `webhook_url`** is documented in **`doc.md`**; it is not an HTTP response from this API’s public routes, so it does not use these numeric codes.

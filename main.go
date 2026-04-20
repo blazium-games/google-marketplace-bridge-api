@@ -40,6 +40,7 @@ func main() {
 	mux.HandleFunc("GET /health", handlers.Health)
 	mux.HandleFunc("HEAD /health", handlers.Health)
 	mux.HandleFunc("/instantiate", h.Instantiate)
+	mux.HandleFunc("/dummy", h.Dummy)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

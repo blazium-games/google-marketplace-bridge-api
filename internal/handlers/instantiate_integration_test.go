@@ -137,6 +137,8 @@ func TestIntegration_WebhookCallbackWithinFiveSeconds(t *testing.T) {
 	}
 	var payload struct {
 		ContractUID string `json:"contract_uid"`
+		ConsumerURL string `json:"consumer_url"`
+		AdminURL    string `json:"admin_url"`
 	}
 	gotBodyMu.Lock()
 	bodyStr := gotBody
@@ -146,6 +148,12 @@ func TestIntegration_WebhookCallbackWithinFiveSeconds(t *testing.T) {
 	}
 	if payload.ContractUID != "contract-int-1" {
 		t.Fatalf("payload: %s", bodyStr)
+	}
+	if payload.ConsumerURL == "" || payload.AdminURL == "" {
+		t.Fatalf("expected consumer_url and admin_url: %s", bodyStr)
+	}
+	if payload.ConsumerURL == payload.AdminURL {
+		t.Fatal("consumer and admin urls should differ")
 	}
 
 	var row models.Instantiate

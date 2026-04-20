@@ -16,6 +16,8 @@ import (
 // CallbackPayload is the JSON sent to webhook_url after the delay.
 type CallbackPayload struct {
 	ContractUID string `json:"contract_uid"`
+	ConsumerURL string `json:"consumer_url"`
+	AdminURL    string `json:"admin_url"`
 }
 
 // RunWorker periodically finds due records and POSTs to their webhook_url.
@@ -55,7 +57,11 @@ func processDue(ctx context.Context, db *gorm.DB, client *http.Client) {
 }
 
 func deliverOne(ctx context.Context, db *gorm.DB, client *http.Client, row *models.Instantiate) error {
-	body, err := json.Marshal(CallbackPayload{ContractUID: row.ContractUID})
+	body, err := json.Marshal(CallbackPayload{
+		ContractUID: row.ContractUID,
+		ConsumerURL: row.ConsumerURL,
+		AdminURL:    row.AdminURL,
+	})
 	if err != nil {
 		return err
 	}

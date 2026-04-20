@@ -38,16 +38,16 @@ type instantiateResponse struct {
 	Success bool `json:"success"`
 }
 
-// Instantiate handles POST /instantiate.
-func (h *Handler) Instantiate(w http.ResponseWriter, r *http.Request) {
+// readInstantiateRequest parses POST /instantiate-style bodies (shared with /dummy).
+func (h *Handler) readInstantiateRequest(w http.ResponseWriter, r *http.Request) (*InstantiateRequest, bool) {
 	if r.Method != http.MethodPost {
 		apierr.Write(w, http.StatusMethodNotAllowed, apierr.CodeMethodNotAllowed)
-		return
+		return nil, false
 	}
 
 	if r.Header.Get(h.cfg.SecurityHeaderName) != h.cfg.SecurityHeaderValue {
 		apierr.Write(w, http.StatusUnauthorized, apierr.CodeUnauthorized)
-		return
+		return nil, false
 	}
 
 	var req InstantiateRequest
@@ -59,14 +59,25 @@ func (h *Handler) Instantiate(w http.ResponseWriter, r *http.Request) {
 			code = apierr.CodeJSONUnknownField
 		}
 		apierr.Write(w, http.StatusBadRequest, code)
-		return
+		return nil, false
 	}
 
 	if code := validateInstantiate(&req); code != 0 {
 		apierr.Write(w, http.StatusBadRequest, code)
+		return nil, false
+	}
+
+	return &req, true
+}
+
+// Instantiate handles POST /instantiate.
+func (h *Handler) Instantiate(w http.ResponseWriter, r *http.Request) {
+	req, ok := h.readInstantiateRequest(w, r)
+	if !ok {
 		return
 	}
 
+	consumerURL, adminURL := GenerateConsumerAdminURLs()
 	notifyAt := time.Now().Add(h.cfg.WebhookNotifyDelay)
 	rec := models.Instantiate{
 		Email:                strings.TrimSpace(req.Email),
@@ -75,6 +86,8 @@ func (h *Handler) Instantiate(w http.ResponseWriter, r *http.Request) {
 		Project:              strings.TrimSpace(req.Project),
 		WebhookURL:           strings.TrimSpace(req.WebhookURL),
 		WebhookAuthorization: strings.TrimSpace(req.Authorization),
+		ConsumerURL:          consumerURL,
+		AdminURL:             adminURL,
 		WebhookNotifyAt:      notifyAt,
 	}
 
