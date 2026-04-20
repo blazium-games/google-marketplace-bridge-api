@@ -35,8 +35,7 @@ type InstantiateRequest struct {
 }
 
 type instantiateResponse struct {
-	ID              uint      `json:"id"`
-	WebhookNotifyAt time.Time `json:"webhook_notify_at"`
+	Success bool `json:"success"`
 }
 
 // Instantiate handles POST /instantiate.
@@ -86,10 +85,7 @@ func (h *Handler) Instantiate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(instantiateResponse{
-		ID:              rec.ID,
-		WebhookNotifyAt: rec.WebhookNotifyAt,
-	})
+	_ = json.NewEncoder(w).Encode(instantiateResponse{Success: true})
 }
 
 // validateInstantiate returns 0 if valid, otherwise an apierr code for the first failing field.

@@ -134,12 +134,12 @@ func TestInstantiate_Created(t *testing.T) {
 	if err := json.NewDecoder(rec.Body).Decode(&got); err != nil {
 		t.Fatal(err)
 	}
-	if got.ID == 0 {
-		t.Fatal("expected id")
+	if !got.Success {
+		t.Fatalf("expected success: %+v", got)
 	}
 
 	var row models.Instantiate
-	if err := db.First(&row, got.ID).Error; err != nil {
+	if err := db.Where("contract_uid = ?", "uid-99").First(&row).Error; err != nil {
 		t.Fatal(err)
 	}
 	if row.ContractUID != "uid-99" || row.WebhookAuthorization != "Bearer tok" {

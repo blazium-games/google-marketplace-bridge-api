@@ -60,4 +60,4 @@ These codes are returned for `POST /instantiate` when a required string field is
 
 ## Success responses
 
-Successful calls do not use these codes. For example, `POST /instantiate` returns `201 Created` with a JSON body including `id` and `webhook_notify_at`, not an error `code`.
+Successful calls do not use these codes. For example, `POST /instantiate` returns `201 Created` with `{"success":true}`, not an error `code`.
