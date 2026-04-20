@@ -34,6 +34,11 @@ func main() {
 
 	h := handlers.New(cfg, db)
 	mux := http.NewServeMux()
+	// Exact root and /health only (Go 1.22+ patterns); do not use "/" alone — it matches all paths.
+	mux.HandleFunc("GET /{$}", handlers.Health)
+	mux.HandleFunc("HEAD /{$}", handlers.Health)
+	mux.HandleFunc("GET /health", handlers.Health)
+	mux.HandleFunc("HEAD /health", handlers.Health)
 	mux.HandleFunc("/instantiate", h.Instantiate)
 
 	ctx, cancel := context.WithCancel(context.Background())

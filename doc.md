@@ -1,6 +1,26 @@
 # API request reference
 
-This service exposes a single HTTP endpoint. All request bodies are JSON unless noted.
+Besides `POST /instantiate`, the service exposes health routes that require no authentication.
+
+---
+
+## `GET /` and `HEAD /`
+
+| Item | Value |
+|------|--------|
+| Methods | `GET`, `HEAD` only (others → **405**). |
+| Path | Exactly `/` |
+| Response | **200 OK** with an empty body. |
+
+---
+
+## `GET /health` and `HEAD /health`
+
+| Item | Value |
+|------|--------|
+| Methods | `GET`, `HEAD` only (others → **405**). |
+| Path | `/health` |
+| Response | **200 OK** with an empty body. |
 
 ---
 
