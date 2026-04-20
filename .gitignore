@@ -1,0 +1,8 @@
+api.exe
+*.exe
+*.test
+
+# Local secrets (use example.env as a template)
+.env
+.env.*
+!.env.example

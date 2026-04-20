@@ -1,0 +1,19 @@
+# Normalize line endings
+* text=auto
+
+# Go
+*.go text eol=lf diff=go
+go.mod text eol=lf
+go.sum text eol=lf
+
+# Config / docs
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Makefile text eol=lf
+
+# Windows scripts
+*.ps1 text eol=crlf
+
+# Binary
+*.exe binary
